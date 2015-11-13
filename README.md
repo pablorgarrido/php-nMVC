@@ -10,9 +10,15 @@ Simple and beautifull App Skeleton written in PHP with minimal and secure login,
 
 ## Installation (quick setup)
 
-Create a database *login* and the table *users* via the SQL statements in the `_install` folder.
-Change mySQL database user and password in `config/db.php` (*DB_USER* and *DB_PASS*).
+Create a database and the table *nmvc_users* via the SQL statements in the `_installation` folder.
+Set database host,db,user and password in 'config/db.php'
+Set variable in 'config/config.php' 
 
+$dir_base = "/nmvc/"; (location folder of nmvc installation)
+
+$app_nome='WebApp PHP NMVC'; (App name)
+
+Optionally you replace default app icon with your persoal icon (64x64 pixel)
 
 ## License
 

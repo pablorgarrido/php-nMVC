@@ -1,0 +1,15 @@
+<?php
+
+
+
+$dir_base = "/robot/";
+
+$app_nome='WebApp Robot INCA';
+
+$app_icon=$dir_base.'img/appicon.png';
+
+
+include_once('views.php');
+
+?>
+

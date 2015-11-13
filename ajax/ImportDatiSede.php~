@@ -1,0 +1,49 @@
+<?php
+session_start();
+
+include_once('../config/db.php');
+
+
+if( isset($_GET['csede']) && isset($_GET['file']) && isset($_GET['idcamp']) ) {
+	$csede = $_GET['csede'];
+	$idcamp = $_GET['idcamp'];
+	$file = '../csv/'.$_GET['file'];
+	
+	echo "sede ".$csede ." file ".$file;
+	
+$row = 1;
+
+$db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+$db->query("delete from ".TAB_DATI." where codsede='".$csede."' and idcampagna = ".$idcamp);
+
+
+$handle = fopen($file,"r");
+
+$firstRow = true;
+    
+    //loop through the csv file and insert into database
+    do {
+        if ($data[0]) {
+        	   if($firstRow) { $firstRow = false; }
+
+	    else {
+            $db->query("INSERT INTO ".TAB_DATI." (nome, cognome, cf, codsede, idcampagna) VALUES
+                (
+                    '".addslashes($data[0])."',
+                    '".addslashes($data[1])."',
+                    '".addslashes($data[2])."',
+                    '".addslashes($csede)."',
+                    '".addslashes($idcamp)."'
+                )
+            ");
+            }
+        }
+    } while ($data = fgetcsv($handle,1000,",","'"));
+     
+    
+    
+$db->close;	
+}
+
+?>

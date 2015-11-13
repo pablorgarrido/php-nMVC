@@ -1,0 +1,39 @@
+<?php
+
+session_start();
+
+include_once('../config/db.php');
+
+//file_put_contents('./log.txt', $_POST);	
+
+//echo $_GET['fcid'];
+
+if( isset($_GET['fcid'])  ) {
+	$idcamp = $_GET['fcid'];
+	$db = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+	$results_array = array();
+	$result = mysqli_query($db,"select * from ".TAB_CAMPAGNE." where id = ".$idcamp);
+
+	if($result->num_rows > 0) {
+		  $sql="update ".TAB_CAMPAGNE." 
+		   set nome = "."'".$_GET['fcnome']."', campi_csv = "."'".$_GET['fccampi']."', chiusa = ".$_GET['fcstato']."
+			where id = ".$idcamp;
+			$resultupd = $db->query($sql);
+			echo $db->error;
+		} else {
+			$sql="insert into ".TAB_CAMPAGNE." 
+			(nome, campi_csv, chiusa)
+			values "."('".$_GET['fcnome']."', '".$_GET['fccampi']."', ".$_GET['fcstato'].")";
+			$resultins = $db->query($sql);
+			echo $db->error;
+		}	
+	
+	file_put_contents('./log.txt',  $sql);
+	
+	mysqli_free_result($result);
+
+	mysqli_close($db);
+
+}
+?>
