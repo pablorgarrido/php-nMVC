@@ -36,24 +36,26 @@ class Registration
      */
     private function registerNewUser()
     {
+    	
+    	//echo "creazione utente";
         if (empty($_POST['user_name'])) {
-            $this->errors[] = "Empty Username";
+            $this->errors[] = "Digitare Username";
         } elseif (empty($_POST['user_password_new']) || empty($_POST['user_password_repeat'])) {
-            $this->errors[] = "Empty Password";
+            $this->errors[] = "Password vuota";
         } elseif ($_POST['user_password_new'] !== $_POST['user_password_repeat']) {
-            $this->errors[] = "Password and password repeat are not the same";
+            $this->errors[] = "Le password non coincidono";
         } elseif (strlen($_POST['user_password_new']) < 6) {
-            $this->errors[] = "Password has a minimum length of 6 characters";
+            $this->errors[] = "La password deve essere almeno 6 caratteri";
         } elseif (strlen($_POST['user_name']) > 64 || strlen($_POST['user_name']) < 2) {
-            $this->errors[] = "Username cannot be shorter than 2 or longer than 64 characters";
+            $this->errors[] = "Username deve essere da 2 a 64 caratteri";
         } elseif (!preg_match('/^[a-z\d]{2,64}$/i', $_POST['user_name'])) {
             $this->errors[] = "Username does not fit the name scheme: only a-Z and numbers are allowed, 2 to 64 characters";
         } elseif (empty($_POST['user_email'])) {
-            $this->errors[] = "Email cannot be empty";
+            $this->errors[] = "Digitare email";
         } elseif (strlen($_POST['user_email']) > 64) {
-            $this->errors[] = "Email cannot be longer than 64 characters";
+            $this->errors[] = "Email troppo lunga";
         } elseif (!filter_var($_POST['user_email'], FILTER_VALIDATE_EMAIL)) {
-            $this->errors[] = "Your email address is not in a valid email format";
+            $this->errors[] = "La tua email non &egrave; valida";
         } elseif (!empty($_POST['user_name'])
             && strlen($_POST['user_name']) <= 64
             && strlen($_POST['user_name']) >= 2
@@ -76,8 +78,12 @@ class Registration
                 $this->errors[] = $this->db_connection->error;
             }
 
+
+
             // if no connection errors (= working database connection)
             if (!$this->db_connection->connect_errno) {
+
+//echo "connessione db ok";
 
                 // escaping, additionally removing everything that could be (html/javascript-) code
                 $user_name = $this->db_connection->real_escape_string(strip_tags($_POST['user_name'], ENT_QUOTES));
@@ -95,7 +101,7 @@ class Registration
                 $query_check_user_name = $this->db_connection->query($sql);
 
                 if ($query_check_user_name->num_rows == 1) {
-                    $this->errors[] = "Sorry, that username / email address is already taken.";
+                    $this->errors[] = "Username inserito  gi&agrave; presente.";
                 } else {
                     // write new user's data into database
                     $sql = "INSERT INTO ".TAB_USERS." (user_name, user_password_hash, user_email)
@@ -104,16 +110,19 @@ class Registration
 
                     // if user has been added successfully
                     if ($query_new_user_insert) {
-                        $this->messages[] = "Your account has been created successfully. You can now log in.";
+                        $this->messages[] = "La registrazione &egrave; andata a buon fine.";
                     } else {
-                        $this->errors[] = "Sorry, your registration failed. Please go back and try again.";
+                        $this->errors[] = "Spiacente, la registrazione non &egrave; avvenuta con successo, riprova.";
                     }
                 }
             } else {
-                $this->errors[] = "Sorry, no database connection.";
+                $this->errors[] = "Problemi di connessione al database.";
             }
         } else {
-            $this->errors[] = "An unknown error occurred.";
+            $this->errors[] = "Un errore imprevisto, riprova.";
         }
+        
+//echo print_r($this->errors);        
+        
     }
 }

@@ -13,16 +13,14 @@
 		<![endif]-->
 		 <link href="<?php echo $views_dash; ?>css/styles.css" rel="stylesheet">
 
-
 		<script src="<?php echo $views_dash; ?>js/jquery.min.js"></script>
-		
-		<script src="<?php echo $views_dash; ?>js/function.js"></script>
 		
 		<script src="<?php echo $views_dash; ?>js/bootstrap.min.js"></script>		
 		
-		
 		<script src="<?php echo $views_dash; ?>js/SimpleAjaxUploader.min.js"></script>
-		<script src="<?php echo $views_dash; ?>js/upload.js"></script>								
+		<script src="<?php echo $views_dash; ?>js/upload.js"></script>
+
+		<script src="<?php echo $views_dash; ?>js/function.js"></script>												
 		
 		
 	</head>
@@ -62,7 +60,7 @@
 <div class="container">
   
 <div class="page-header">
-  <h2>NaSPI <small>calcolo importo</small></h2>
+  <h2>Dashboard <small>principale</small></h2>
 </div>  
   
   <!-- upper section -->
@@ -73,7 +71,7 @@
         <div class="panel-heading">
           <div class="panel-title">
             
-            <h4>Anno di competenza</h4>
+            <h4>Campagne</h4>
           </div>
         </div>
         <div class="panel-body">
@@ -83,11 +81,10 @@
               
               <div class="controls">
                 <select class="form-control" id="selectcamp">
-                <option value="2015">2015</option>
 						<?php
-							//foreach ($_SESSION['campagne'] as $row) {
-							//echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';    
-							//}         
+							foreach ($_SESSION['campagne'] as $row) {
+							echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';    
+							}         
 						?>        
                 
                 </select>
@@ -96,7 +93,23 @@
             </div>    
           </form>
 
+ <?php if(isset($_SESSION['user_role']) && $_SESSION['user_role'] == 0) { ?>           
+              <div class="btn-group">
+  <button type="button" class="btn btn-primary btn-xs">Azioni</button>
+  <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="#" id="modcampagna">Modifica campagna</a></li>
+    <li><a href="#" id="nuovacampagna">Nuova campagna</a></li>
+    <li role="separator" class="divider"></li>
+    <li><a href="#" id="elimcampagna">Elimina campagna</a></li>    
+  </ul>
+</div>
 
+
+<?php } ?>
           
         </div><!--/panel content-->
       </div><!--/panel-->
@@ -106,7 +119,7 @@
         <div class="panel-heading">
           <div class="panel-title">
             
-            <h4>Altro</h4>
+            <h4>Sedi</h4>
           </div>
         </div>
         <div class="panel-body">
@@ -129,6 +142,27 @@
         </div><!--/panel content-->
       </div><!--/panel-->
      
+      <hr>   
+		<div class="row" >
+            <div class="col-sm-9">
+              <button id="uploadBtn" class="btn btn-large btn-primary">Carica file dati CSV</button>
+            </div>
+            <div class="col-sm-12">
+          <div id="progressOuter" class="progress progress-striped active" style="display:none;">
+            <div id="progressBar" class="progress-bar progress-bar-success"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+            </div>
+          </div>
+            </div>
+          </div>  
+          <div class="row" style="padding-top:10px;">
+            <div class="col-xs-10">
+              <div id="msgBox">
+              </div>
+            </div>
+          </div>      
+        
+     
+     
       <hr>
    
 
@@ -137,77 +171,69 @@
     <div class="col-sm-9">
       	
       <!-- column 2 -->	
+       <h3 id="datatitle"><i class="glyphicon glyphicon-th-list" ></i> Dati </h3>  
+       <h6 id="datacodsede"></h6>   
+<hr>     
 	   <div class="row">
             <!-- center left-->	
             
          	<div class="col-md-12">
-<form class="form form-horizontal" id="formtabanni">
-      <table class="table table-striped" id="datatable">
+
+
+          <div id="progressOuterT" class="progress progress-striped active" style="display:none;">
+            <div id="progressBarT" class="progress-bar progress-bar-success"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+            </div>
+          </div>
+          <div id="msgBox">
+              </div>
+          
+      <table class="table table-striped" >
 
 		  <thead>
-          <tr><th>Anno</th><th>Tipo contributo</th><th>Diritto</th><th>Misura</th><th>Retribuzione</th><th>Settimane utilizzate</th></tr>
+          <tr><th>Nome</th><th>Cognome</th><th>Codice fiscale</th><th>campo</th><th><button type="button" name="btnUploadSinglePDF" id="btnUploadSinglePDF" class="btn btn-xs btn-primary" aria-label="Left Align">
+  Carica file PDF
+</button> </th></tr>
         </thead>
-        <tbody>
-
-			<tr><td>2015</td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" placeholder="Contributo"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftdir0" name="ftdir0" size="2" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="fmis0" name="fmis0" size="2" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fret0" name="fret0" size="7" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fsu0" name="fsu2015" size="2"></div></td></tr>
-    		<tr><td>2014</td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" placeholder="Contributo"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftdir1" name="ftdir1" size="2" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="fmis1" name="fmis1" size="2" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fret1" name="fret1" size="7" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fsu1" name="fsu2014" size="2"></div></td></tr>
-    		<tr><td>2013</td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" placeholder="Contributo"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftdir2" name="ftdir2" size="2" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="fmis2" name="fmis2" size="2" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fret2" name="fret2" size="7" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fsu2" name="fsu2013" size="2"></div></td></tr>
-    		<tr><td>2012</td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" placeholder="Contributo"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftdir3" name="ftdir3" size="2" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="fmis3" name="fmis3" size="2" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fret3" name="fret3" size="7" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fsu3" name="fsu2012" size="2"></div></td></tr>
-    		<tr><td>2011</td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" placeholder="Contributo"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftdir4" name="ftdir4" size="2" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="fmis4" name="fmis4" size="2" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fret4" name="fret4" size="7" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fsu4" name="fsu2011" size="2"></div></td></tr>
-    		<tr><td>2010</td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" placeholder="Contributo"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftdir5" name="ftdir5" size="2" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="fmis5" name="fmis5" size="2" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fret5" name="fret5" size="7" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fsu5" name="fsu2010" size="2"></div></td></tr>
-    		<tr><td>2009</td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" placeholder="Contributo"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftdir6" name="ftdir6" size="2" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="fmis6" name="fmis6" size="2" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fret6" name="fret6" size="7" value="0"></div></td><td><div class="controls"><input type="text" class="form-control" id="fsu6" name="fsu2009" size="2"></div></td></tr>
-
-    		<tr><td></td><td align="right" valign="bottom">TOTALI</td><td><div class="controls"><input type="text" class="form-control" id="ftotdir" name="ftotdir" size="2" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftotmis" name="ftotmis" size="2" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftotretr" name="ftotretr" size="7" readonly="readonly"></div></td><td><div class="controls"><input type="text" class="form-control" id="ftotsu" name="ftotsu" size="2" readonly="readonly"></div></td></tr>
-    		
-
-
-			</tbody>
-
+        <tbody id="datatable">
+        
+        
+ 		  </tbody>      
+      
 
       </table>            	
 
- 	
- 	      <hr>
- 	      
-      <h3>Calcolo NaSPI</h3>   	
+         	
+         	
+			  <!-- <div class="well">Inbox Messages <span class="badge pull-right">3</span></div> 
+              
+              <hr>
+              -->
+              <div class="panel panel-default">
+                  <div class="panel-heading"><h4>Situazione</h4></div>
+                  <div class="panel-body">
+                    
+                    <small>Completi</small>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100" style="width: 72%">
+                        <span class="sr-only">72% Complete</span>
+                      </div>
+                    </div>
+                    <small>In attesa</small>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                        <span class="sr-only">20% Complete</span>
+                      </div>
+                    </div>
+                    <small>Con problemi</small>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                        <span class="sr-only">80% Complete</span>
+                      </div>
+                    </div>
 
-      <table class="table table-striped" id="datatable">
-
-		  <thead>
-          <tr><th>Totale retribuzione</th><th>Retribuzione settimanale</th><th>Retribuzione mensile</th><th>Diff tra mens e max mens naspi</th><th>Quote di calcolo al 25% e 75%</th><th>Importo giornaliero</th></tr>
-        </thead>
-        <tbody>
-
-			<tr><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readonly"></td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readonly"></td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readonly"></td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readonly"></td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readnly"></td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readonly"></td></tr>
-			 		
-
-
-			</tbody>
-
-
-      </table>            	
-
- 	      <hr>
- 	      
-      <h3>Durata NaSPI</h3>   	
-
-      <table class="table table-striped" id="datatable">
-
-		  <thead>
-          <tr><th>Totale settimane per diritto</th><th>Settimane utilizzate</th><th>Settimane utili (detratte quelle utilizzate)</th><th>Settimane indennizabili</th><th>GG indennizzabili</th></tr>
-        </thead>
-        <tbody>
-
-			<tr><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readonly"></td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readonly"></td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readonly"></td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readonly"></td><td><div class="controls"><input type="text" class="form-control" id="fc" name="fc" readonly="readnly"></td></tr>
-			  		
-
-
-			</tbody>
-
-
-      </table>            	
-			                  
-</form>              
+                  </div><!--/panel-body-->
+              </div><!--/panel-->                     
+              
           	</div><!--/col-->
          
             <!--center-right-->
@@ -239,7 +265,7 @@
         <h4 class="modal-title" id="boxtitlecamp">Campagna</h4>
       </div>
       <div class="modal-body">
-        
+       
 			<form class="form form-vertical" id="formaddmodcampagna">
 
 
@@ -274,6 +300,7 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dalog -->
 </div><!-- /.modal -->
+
 
 		
 	</body>
