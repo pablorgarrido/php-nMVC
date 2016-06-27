@@ -1,6 +1,6 @@
 # php-nMVC (no Model only View Controller)
 
-## UNDER DEVELOPMENT ##
+
 
 Simple and beautifull App Skeleton written in PHP with minimal and secure login, elegant bootstrap layout and no-Model View Controller logic.
 
